@@ -52,7 +52,7 @@ Este proyecto implementa la persistencia de datos local en Android utilizando Ro
 
 ### 1. Entidad (Item.kt)
 
-```
+```kotlin
 @Entity(tableName = "items")
 data class Item(
     @PrimaryKey(autoGenerate = true)
@@ -65,7 +65,7 @@ data class Item(
 
 ### 2. DAO (ItemDao.kt)
 
-```
+```kotlin
 @Dao
 interface ItemDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -81,7 +81,7 @@ interface ItemDao {
 
 ### 3. Database (InventoryDatabase.kt)
 
-```
+```kotlin
 @Database(entities = [Item::class], version = 1, exportSchema = false)
 abstract class InventoryDatabase : RoomDatabase() {
     abstract fun itemDao(): ItemDao
@@ -103,7 +103,7 @@ Room proporciona una capa de abstracción sobre SQLite que permite:
 
 Todas las operaciones de base de datos se ejecutan de forma asíncrona usando suspend functions:
 
-```
+```kotlin
 viewModelScope.launch {
     itemsRepository.insertItem(item)
 }
@@ -113,7 +113,7 @@ viewModelScope.launch {
 
 El Repository actúa como fuente única de verdad y abstrae el origen de los datos:
 
-```
+```kotlin
 class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
     override suspend fun insertItem(item: Item) = itemDao.insert(item)
 }
@@ -121,7 +121,7 @@ class OfflineItemsRepository(private val itemDao: ItemDao) : ItemsRepository {
 
 ### Inyección de Dependencias Manual
 
-```
+```kotlin
 class InventoryApplication : Application() {
     lateinit var container: AppContainer
     override fun onCreate() {
@@ -182,7 +182,7 @@ Para verificar que los datos persisten correctamente:
 
 Dependencias clave en `build.gradle.kts`:
 
-```
+```kotlin
 implementation("androidx.room:room-runtime:2.6.1")
 ksp("androidx.room:room-compiler:2.6.1")
 implementation("androidx.room:room-ktx:2.6.1")
